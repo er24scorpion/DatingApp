@@ -2,7 +2,7 @@ import { User } from './../../models/user';
 import { UserParams } from './../../_modules/userParams';
 import { MembersService } from './../../_services/members.service';
 import { Component, OnInit } from '@angular/core';
-import { Member } from 'src/app/_modules/member';
+import { Member } from 'src/app/models/member';
 import { Pagination } from 'src/app/models/pagination';
 
 @Component({

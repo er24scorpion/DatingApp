@@ -1,13 +1,13 @@
 import { User } from './../models/user';
 import { AccountService } from './account.service';
 import { UserParams } from './../_modules/userParams';
-import { PaginatedResult } from './../models/pagination';
 import { map, take } from 'rxjs/operators';
-import { Member } from './../_modules/member';
+import { Member } from '../models/member';
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
+import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +48,7 @@ export class MembersService {
       return of(response);
     }
 
-    let params = this.getPaginationHeaders(
+    let params = getPaginationHeaders(
       userParams.pageNumber,
       userParams.pageSize
     );
@@ -58,9 +58,10 @@ export class MembersService {
     params = params.append('gender', userParams.gender);
     params = params.append('orderBy', userParams.orderBy);
 
-    return this.getPaginatedResult<Member[]>(
+    return getPaginatedResult<Member[]>(
       this.baseUrl + 'users',
-      params
+      params,
+      this.http
     ).pipe(
       map((response) => {
         this.memberCache.set(Object.values(userParams).join('-'), response);
@@ -101,35 +102,13 @@ export class MembersService {
   }
 
   getLikes(predicate: string, pageNumber: number, pageSize: number) {
-    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    let params = getPaginationHeaders(pageNumber, pageSize);
     params = params.append('predicate', predicate);
 
-    return this.getPaginatedResult<Partial<Member[]>>(
+    return getPaginatedResult<Partial<Member[]>>(
       this.baseUrl + 'likes',
-      params
+      params,
+      this.http
     );
-  }
-
-  private getPaginatedResult<T>(url: string, params: HttpParams) {
-    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
-
-    return this.http.get<T>(url, { observe: 'response', params }).pipe(
-      map((response) => {
-        paginatedResult.result = response.body!;
-        if (response.headers.get('Pagination') !== null) {
-          paginatedResult.pagination = JSON.parse(
-            response.headers.get('Pagination')!
-          );
-        }
-        return paginatedResult;
-      })
-    );
-  }
-
-  private getPaginationHeaders(pageNumber: number, pageSize: number) {
-    let params = new HttpParams();
-    params = params.append('pageNumber', pageNumber.toString());
-    params = params.append('pageSize', pageSize.toString());
-    return params;
   }
 }

@@ -1,12 +1,12 @@
-import { Photo } from './../../_modules/Photo';
 import { MembersService } from './../../_services/members.service';
 import { User } from './../../models/user';
 import { AccountService } from './../../_services/account.service';
 import { environment } from './../../../environments/environment';
-import { Member } from 'src/app/_modules/member';
+import { Member } from 'src/app/models/member';
 import { Component, OnInit, Input } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { take } from 'rxjs/operators';
+import { Photo } from 'src/app/models/photo';
 
 @Component({
   selector: 'app-photo-editor',

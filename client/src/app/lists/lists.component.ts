@@ -1,6 +1,6 @@
 import { Pagination } from 'src/app/models/pagination';
 import { MembersService } from './../_services/members.service';
-import { Member } from 'src/app/_modules/member';
+import { Member } from 'src/app/models/member';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
