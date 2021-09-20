@@ -1,3 +1,5 @@
+import { AdminGuard } from './guards/admin.guard';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { MemberDetailedResolver } from './_resolvers/member-detailed.resolver';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
@@ -33,6 +35,11 @@ const routes: Routes = [
       },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
+      {
+        path: 'admin',
+        component: AdminPanelComponent,
+        canActivate: [AdminGuard],
+      },
     ],
   },
   { path: 'errors', component: TestErrorsComponent },
