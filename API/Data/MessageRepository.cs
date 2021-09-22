@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,21 +68,20 @@ namespace API.Data
     {
         var query = _context.Messages
         .OrderByDescending(x=> x.MessageSent)
+        .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
         .AsQueryable();
 
         query = messageParams.Container switch
         {
-            "Inbox" => query.Where(u => u.Recipient.UserName == messageParams.Username 
+            "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username 
                                     && !u.RecipientDeleted ),
-            "Outbox" => query.Where(u=>u.Sender.UserName == messageParams.Username 
+            "Outbox" => query.Where(u=>u.SenderUsername == messageParams.Username 
                                     && !u.SenderDeleted),
-            _ => query.Where(u=> u.Recipient.UserName == messageParams.Username  
+            _ => query.Where(u=> u.RecipientUsername == messageParams.Username  
                             && !u.RecipientDeleted && u.DateRead == null)
         };
 
-        var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
-
-        return await PagedList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
+        return await PagedList<MessageDto>.CreateAsync(query, messageParams.PageNumber, messageParams.PageSize);
     }
 
     public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUsername, string recipientUsername)
@@ -99,18 +97,14 @@ namespace API.Data
                 .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-        return _mapper.Map<IEnumerable<MessageDto>>(messages);
+
+        return messages;
 
     }
 
     public void RemoveConnection(Connection connection)
     {
         _context.Connections.Remove(connection);
-    }
-
-    public async Task<bool> SaveAllSync()
-    {
-        return await _context.SaveChangesAsync()>0;
     }
   }
 }
