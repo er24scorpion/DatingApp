@@ -1,3 +1,4 @@
+import { Photo } from 'src/app/models/photo';
 import { User } from './../models/user';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -26,5 +27,17 @@ export class AdminService {
         roles.join(','),
       {}
     );
+  }
+
+  getPhotosForApproval() {
+    return this.http.get<Photo[]>(this.baseUrl + 'admin/photos-to-moderate');
+  }
+
+  approvePhoto(photoId: number) {
+    return this.http.put(this.baseUrl + 'admin/approve-photo/' + photoId, {});
+  }
+
+  rejectPhoto(photoId: number) {
+    return this.http.put(this.baseUrl + 'admin/reject-photo/' + photoId, {});
   }
 }

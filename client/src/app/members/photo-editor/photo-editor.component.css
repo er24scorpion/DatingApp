@@ -8,6 +8,21 @@ img.img-thumbnail {
   border: dotted 3px red;
 }
 
-input[type=file] {
+input[type="file"] {
   color: transparent;
+}
+
+img.unapproved {
+  opacity: 0.2;
+}
+
+.unapproved-text {
+  position: absolute;
+  bottom: 30%;
+  left: 45px;
+  right: 0;
+  margin-right: auto;
+  margin-left: auto;
+  color: red;
+  word-break: break-word;
 }
