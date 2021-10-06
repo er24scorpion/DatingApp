@@ -38,12 +38,6 @@ namespace API
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
       app.UseMiddleware<ExceptionMiddleware>();
-      // if (env.IsDevelopment())
-      // {
-      //   app.UseDeveloperExceptionPage();
-      //   app.UseSwagger();
-      //   app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
-      // }
 
       app.UseHttpsRedirection();
 
@@ -58,11 +52,15 @@ namespace API
       app.UseAuthentication();
       app.UseAuthorization();
 
+      app.UseDefaultFiles();
+      app.UseStaticFiles();
+
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
         endpoints.MapHub<PresenceHub>("hubs/presence");
         endpoints.MapHub<MessageHub>("hubs/message");
+        endpoints.MapFallbackToController("Index", "Fallback");
       });
     }
   }
