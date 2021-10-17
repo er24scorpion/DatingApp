@@ -1,3 +1,4 @@
+import { BusyService } from './../../_services/busy.service';
 import { NgForm } from '@angular/forms';
 import { MessageService } from './../../_services/message.service';
 import {
@@ -20,16 +21,19 @@ export class MemberMessagesComponent implements OnInit {
   @Input() messages: Message[] = [];
   @Input() username = '';
   messageContent = '';
+  loading = false;
 
   constructor(public messageService: MessageService) {}
 
   ngOnInit(): void {}
 
   sendMessage() {
+    this.loading = true;
     this.messageService
       .sendMessage(this.username, this.messageContent)
       .then(() => {
         this.messageForm.reset();
-      });
+      })
+      .finally(() => (this.loading = false));
   }
 }
